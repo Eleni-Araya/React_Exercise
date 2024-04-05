@@ -1,7 +1,6 @@
+import { useState } from 'react'
 import './App.scss'
 import avatar from './images/bozai.png'
-import { useState } from 'react'
-import React from 'react'
 
 
 // Comment List data
@@ -43,6 +42,17 @@ const defaultList = [
     ctime: '10-19 09:00',
     like: 66,
   },
+  {
+    rpid: 4,
+    user: {
+      uid: '30009257',
+      avatar,
+      uname: 'John',
+    },
+    content: 'Follow Me',
+    ctime: '10-18 09:00',
+    like: 77,
+  }
 ]
 // current logged in user info
 const user = {
@@ -61,12 +71,15 @@ const tabs = [
   { type: 'hot', text: 'Top' },
   { type: 'newest', text: 'Newest' },
 ]
+
 const App = () => {
+
   const [commentList, setCommentList] = useState(defaultList);
+
   const deleteComment = (rpid: number) => {
-    const newCommentList = commentList.filter(comment => comment.rpid !== rpid)
-    setCommentList(newCommentList)
+    setCommentList(commentList.filter(item => item.rpid !== rpid));
   }
+
   return (
     <div className="app">
       {/* Nav Tab */}
@@ -109,10 +122,7 @@ const App = () => {
         {/* comment list */}
         <div className="reply-list">
           {/* comment item */}
-          {/* ******printing the comments || task 1 */}
-
           {commentList.map(item => (
-
             <div className="reply-item" key={item.rpid}>
               {/* profile */}
               <div className="root-reply-avatar">
@@ -129,27 +139,27 @@ const App = () => {
                 <div className="user-info">
                   <div className="user-name">{item.user.uname}</div>
                 </div>
-
+                {/* comment content */}
                 <div className="root-reply">
                   <span className="reply-content">{item.content}</span>
                   <div className="reply-info">
-
+                    {/* comment created time */}
                     <span className="reply-time">{item.ctime}</span>
-
+                    {/* total likes */}
                     <span className="reply-time">Like:{item.like}</span>
-                    {/* *****delete comment************* */}
-                    {item.user.uid === user.uid && (
-                      <span className="delete-btn" onClick={() => deleteComment(item.rpid)}>
-                        Delete
-                      </span>
 
-                    )}
-
+                    {
+                      item.user.uid === user.uid && (
+                        <span className="delete-btn" onClick={() => deleteComment(item.rpid)}>
+                          Delete
+                        </span>
+                      )
+                    }
                   </div>
                 </div>
               </div>
-            </div>))}
-          {/* *************something new above. map and define key*************** */}
+            </div>
+          ))}
 
         </div>
       </div>
