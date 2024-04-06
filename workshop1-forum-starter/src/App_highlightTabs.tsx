@@ -2,8 +2,6 @@ import './App.scss'
 import avatar from './images/bozai.png'
 import { useState } from 'react'
 import React from 'react'
-import _ from 'lodash'
-
 
 
 // Comment List data
@@ -85,25 +83,16 @@ const tabs = [
 ]
 const App = () => {
 
-  const [commentList, setCommentList] = useState(_.orderBy(defaultList, 'like', 'desc'));
+  const [commentList, setCommentList] = useState(defaultList);
   const [activeType, setActiveType] = useState('hot')
 
   const deleteComment = (rpid: number) => {
-    setCommentList(commentList.filter(comment => comment.rpid !== rpid))
+    const newCommentList = commentList.filter(comment => comment.rpid !== rpid)
+    // setCommentList(newCommentList)
   }
 
-  // const changeType = (type: string) => {
-  //   setActiveType(type)
-  // }
-
-  const changeActiveType = (type: string) => {
-    setActiveType(type);
-
-    if (type === 'hot') {
-      setCommentList(_.orderBy(commentList, 'like', 'desc'))
-    } else {
-      setCommentList(_.orderBy(commentList, 'ctime', 'desc'))
-    }
+  const changeType = (type: string) => {
+    setActiveType(type)
   }
 
 
@@ -131,7 +120,7 @@ const App = () => {
 
                 return (<span key={tab.type}
                   className={classnames}
-                  onClick={() => changeActiveType(tab.type)}>
+                  onClick={() => changeType(tab.type)}>
                   {tab.text}
                 </span>);
               }
