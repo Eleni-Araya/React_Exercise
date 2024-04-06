@@ -43,17 +43,37 @@ const defaultList = [
     ctime: '10-19 09:00',
     like: 66,
   },
+  {
+    rpid: 4,
+    user: {
+      uid: '3608015',
+      avatar: '',
+      uname: 'eleni Araya',
+    },
+    content: 'I search for you .',
+    ctime: '11-13 11:29',
+    like: 88,
+  },
+  {
+    rpid: 5,
+    user: {
+      uid: '3608015',
+      avatar: '',
+      uname: 'eleni Araya',
+    },
+    content: 'Hello react.',
+    ctime: '11-13 11:29',
+    like: 88,
+  }
 ]
 // current logged in user info
 const user = {
-  // userid
-  uid: '30009257',
-  // profile
-  avatar,
-  // username
-  uname: 'John',
-}
 
+  uid: '3608015',
+  avatar: '',
+  uname: 'eleni Araya',
+
+}
 
 
 // Nav Tab
@@ -62,11 +82,20 @@ const tabs = [
   { type: 'newest', text: 'Newest' },
 ]
 const App = () => {
+
   const [commentList, setCommentList] = useState(defaultList);
+  const [activeType, setActiveType] = useState('hot')
+
   const deleteComment = (rpid: number) => {
     const newCommentList = commentList.filter(comment => comment.rpid !== rpid)
-    setCommentList(newCommentList)
+    // setCommentList(newCommentList)
   }
+
+  const changeType = (type: string) => {
+    setActiveType(type)
+  }
+
+
   return (
     <div className="app">
       {/* Nav Tab */}
@@ -77,10 +106,28 @@ const App = () => {
             {/* Like */}
             <span className="total-reply">{10}</span>
           </li>
-          <li className="nav-sort">
-            {/* highlight class name： active */}
-            <span className='nav-item'>Top</span>
-            <span className='nav-item'>Newest</span>
+          <li className="nav-sort" >
+            {/* highlight class name： active ****Tab mapped below*/}
+            {
+              tabs.map(tab => {
+                let classnames = '';
+                if (tab.type === activeType) {
+                  classnames = 'nav-item active'
+                } else {
+                  classnames = 'nav-item'
+                }
+
+
+                return (<span key={tab.type}
+                  className={classnames}
+                  onClick={() => changeType(tab.type)}>
+                  {tab.text}
+                </span>);
+              }
+              )
+            }
+
+
           </li>
         </ul>
       </div>
