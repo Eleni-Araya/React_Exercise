@@ -1,22 +1,8 @@
 import './App.scss'
 import avatar from './images/bozai.png'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
-import _ from 'lodash'
-import { v4 as uuidv4 } from 'uuid'
-import dayjs from 'dayjs'
 
-interface Comment {
-  rpid: number | string,
-  user: {
-    uid: string,
-    avatar: string,
-    uname: string
-  }
-  content: string,
-  ctime: string,
-  like: number
-}
 
 // Comment List data
 const defaultList = [
@@ -95,43 +81,18 @@ const tabs = [
   { type: 'hot', text: 'Top' },
   { type: 'newest', text: 'Newest' },
 ]
-
-// reply-item component
 const App = () => {
 
-  const [commentList, setCommentList] = useState<Comment[]>(_.orderBy(defaultList, 'like', 'desc'));
+  const [commentList, setCommentList] = useState(defaultList);
   const [activeType, setActiveType] = useState('hot')
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  const deleteComment = (rpid: number | string) => {
-    setCommentList(commentList.filter(comment => comment.rpid !== rpid))
+  const deleteComment = (rpid: number) => {
+    const newCommentList = commentList.filter(comment => comment.rpid !== rpid)
+    // setCommentList(newCommentList)
   }
 
-  const changeActiveType = (type: string) => {
-    setActiveType(type);
-
-    if (type === 'hot') {
-      setCommentList(_.orderBy(commentList, 'like', 'desc'))
-    } else {
-      setCommentList(_.orderBy(commentList, 'ctime', 'desc'))
-    }
-  }
-
-  const makePost = () => {
-    // textareaRef.current?.value
-
-    const newComment = {
-      rpid: uuidv4(),
-      user,
-      content: textareaRef.current!.value,
-      ctime: dayjs(Date.now()).format('MM-DD HH:mm'),
-      like: 0
-    }
-    setCommentList([...commentList, newComment])
-    textareaRef.current!.value = '';
-    textareaRef.current!.focus()
-
+  const changeType = (type: string) => {
+    setActiveType(type)
   }
 
 
@@ -159,7 +120,7 @@ const App = () => {
 
                 return (<span key={tab.type}
                   className={classnames}
-                  onClick={() => changeActiveType(tab.type)}>
+                  onClick={() => changeType(tab.type)}>
                   {tab.text}
                 </span>);
               }
@@ -181,14 +142,14 @@ const App = () => {
             </div>
           </div>
           <div className="reply-box-wrap">
-            {/* comment ***********Ref added*/}
-            <textarea ref={textareaRef}
+            {/* comment */}
+            <textarea
               className="reply-box-textarea"
               placeholder="tell something..."
             />
             {/* post button */}
-            <div className="reply-box-send" onClick={makePost}>
-              <div className="send-text" >post</div>
+            <div className="reply-box-send">
+              <div className="send-text">post</div>
             </div>
           </div>
         </div>

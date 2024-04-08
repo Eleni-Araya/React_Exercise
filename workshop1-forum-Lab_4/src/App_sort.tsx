@@ -1,22 +1,10 @@
 import './App.scss'
 import avatar from './images/bozai.png'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
 import _ from 'lodash'
-import { v4 as uuidv4 } from 'uuid'
-import dayjs from 'dayjs'
 
-interface Comment {
-  rpid: number | string,
-  user: {
-    uid: string,
-    avatar: string,
-    uname: string
-  }
-  content: string,
-  ctime: string,
-  like: number
-}
+
 
 // Comment List data
 const defaultList = [
@@ -95,18 +83,18 @@ const tabs = [
   { type: 'hot', text: 'Top' },
   { type: 'newest', text: 'Newest' },
 ]
-
-// reply-item component
 const App = () => {
 
-  const [commentList, setCommentList] = useState<Comment[]>(_.orderBy(defaultList, 'like', 'desc'));
+  const [commentList, setCommentList] = useState(_.orderBy(defaultList, 'like', 'desc'));
   const [activeType, setActiveType] = useState('hot')
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  const deleteComment = (rpid: number | string) => {
+  const deleteComment = (rpid: number) => {
     setCommentList(commentList.filter(comment => comment.rpid !== rpid))
   }
+
+  // const changeType = (type: string) => {
+  //   setActiveType(type)
+  // }
 
   const changeActiveType = (type: string) => {
     setActiveType(type);
@@ -116,22 +104,6 @@ const App = () => {
     } else {
       setCommentList(_.orderBy(commentList, 'ctime', 'desc'))
     }
-  }
-
-  const makePost = () => {
-    // textareaRef.current?.value
-
-    const newComment = {
-      rpid: uuidv4(),
-      user,
-      content: textareaRef.current!.value,
-      ctime: dayjs(Date.now()).format('MM-DD HH:mm'),
-      like: 0
-    }
-    setCommentList([...commentList, newComment])
-    textareaRef.current!.value = '';
-    textareaRef.current!.focus()
-
   }
 
 
@@ -181,14 +153,14 @@ const App = () => {
             </div>
           </div>
           <div className="reply-box-wrap">
-            {/* comment ***********Ref added*/}
-            <textarea ref={textareaRef}
+            {/* comment */}
+            <textarea
               className="reply-box-textarea"
               placeholder="tell something..."
             />
             {/* post button */}
-            <div className="reply-box-send" onClick={makePost}>
-              <div className="send-text" >post</div>
+            <div className="reply-box-send">
+              <div className="send-text">post</div>
             </div>
           </div>
         </div>

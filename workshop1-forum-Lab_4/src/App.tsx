@@ -89,14 +89,54 @@ const user = {
 
 }
 
-
 // Nav Tab
 const tabs = [
   { type: 'hot', text: 'Top' },
   { type: 'newest', text: 'Newest' },
 ]
 
-// reply-item component
+interface PropsReplyType {
+  commentList: Comment[],
+  onDeleteComment: (rpid: number | string) => void
+
+}
+
+function Reply_Item(props: PropsReplyType) {
+  const { commentList, onDeleteComment } = props
+  return (
+    <div>
+      <div className="reply-list">
+        {commentList.map(item => (
+          <div className="reply-item" key={item.rpid}>
+            <div className="root-reply-avatar">
+              <div className="bili-avatar">
+                <img
+                  className="bili-avatar-img"
+                  alt=""
+                />
+              </div>
+            </div>
+            <div className="content-wrap">
+              <div className="user-info">
+                <div className="user-name">{item.user.uname}</div>
+              </div>
+              <div className="root-reply">
+                <span className="reply-content">{item.content}</span>
+                <div className="reply-info">
+                  <span className="reply-time">{item.ctime}</span>
+                  <span className="reply-time">Like:{item.like}</span>
+                  {item.user.uid === user.uid && (
+                    <span className="delete-btn" onClick={() => onDeleteComment(item.rpid)}>
+                      Delete
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>))}
+      </div ></div >)
+}
+
 const App = () => {
 
   const [commentList, setCommentList] = useState<Comment[]>(_.orderBy(defaultList, 'like', 'desc'));
@@ -119,8 +159,6 @@ const App = () => {
   }
 
   const makePost = () => {
-    // textareaRef.current?.value
-
     const newComment = {
       rpid: uuidv4(),
       user,
@@ -131,13 +169,9 @@ const App = () => {
     setCommentList([...commentList, newComment])
     textareaRef.current!.value = '';
     textareaRef.current!.focus()
-
   }
-
-
   return (
     <div className="app">
-      {/* Nav Tab */}
       <div className="reply-navigation">
         <ul className="nav-bar">
           <li className="nav-title">
@@ -170,9 +204,7 @@ const App = () => {
           </li>
         </ul>
       </div>
-
       <div className="reply-wrap">
-        {/* comments */}
         <div className="box-normal">
           {/* current logged in user profile */}
           <div className="reply-box-avatar">
@@ -192,55 +224,10 @@ const App = () => {
             </div>
           </div>
         </div>
-        {/* comment list */}
-        <div className="reply-list">
-          {/* comment item */}
-          {/* ******printing the comments || task 1 */}
-
-          {commentList.map(item => (
-
-            <div className="reply-item" key={item.rpid}>
-              {/* profile */}
-              <div className="root-reply-avatar">
-                <div className="bili-avatar">
-                  <img
-                    className="bili-avatar-img"
-                    alt=""
-                  />
-                </div>
-              </div>
-
-              <div className="content-wrap">
-                {/* username */}
-                <div className="user-info">
-                  <div className="user-name">{item.user.uname}</div>
-                </div>
-
-                <div className="root-reply">
-                  <span className="reply-content">{item.content}</span>
-                  <div className="reply-info">
-
-                    <span className="reply-time">{item.ctime}</span>
-
-                    <span className="reply-time">Like:{item.like}</span>
-                    {/* *****delete comment************* */}
-                    {item.user.uid === user.uid && (
-                      <span className="delete-btn" onClick={() => deleteComment(item.rpid)}>
-                        Delete
-                      </span>
-
-                    )}
-
-                  </div>
-                </div>
-              </div>
-            </div>))}
-          {/* *************something new above. map and define key*************** */}
-
-        </div>
+        {/* parent to child------new component added here */}
+        <Reply_Item commentList={commentList} onDeleteComment={deleteComment} />
       </div>
     </div>
   )
 }
-
 export default App

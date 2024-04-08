@@ -1,22 +1,8 @@
 import './App.scss'
 import avatar from './images/bozai.png'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import React from 'react'
-import _ from 'lodash'
-import { v4 as uuidv4 } from 'uuid'
-import dayjs from 'dayjs'
 
-interface Comment {
-  rpid: number | string,
-  user: {
-    uid: string,
-    avatar: string,
-    uname: string
-  }
-  content: string,
-  ctime: string,
-  like: number
-}
 
 // Comment List data
 const defaultList = [
@@ -57,37 +43,17 @@ const defaultList = [
     ctime: '10-19 09:00',
     like: 66,
   },
-  {
-    rpid: 4,
-    user: {
-      uid: '3608015',
-      avatar: '',
-      uname: 'eleni Araya',
-    },
-    content: 'I search for you .',
-    ctime: '11-13 11:29',
-    like: 88,
-  },
-  {
-    rpid: 5,
-    user: {
-      uid: '3608015',
-      avatar: '',
-      uname: 'eleni Araya',
-    },
-    content: 'Hello react.',
-    ctime: '11-13 11:29',
-    like: 88,
-  }
 ]
 // current logged in user info
 const user = {
-
-  uid: '3608015',
-  avatar: '',
-  uname: 'eleni Araya',
-
+  // userid
+  uid: '30009257',
+  // profile
+  avatar,
+  // username
+  uname: 'John',
 }
+
 
 
 // Nav Tab
@@ -95,46 +61,12 @@ const tabs = [
   { type: 'hot', text: 'Top' },
   { type: 'newest', text: 'Newest' },
 ]
-
-// reply-item component
 const App = () => {
-
-  const [commentList, setCommentList] = useState<Comment[]>(_.orderBy(defaultList, 'like', 'desc'));
-  const [activeType, setActiveType] = useState('hot')
-
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-
-  const deleteComment = (rpid: number | string) => {
-    setCommentList(commentList.filter(comment => comment.rpid !== rpid))
+  const [commentList, setCommentList] = useState(defaultList);
+  const deleteComment = (rpid: number) => {
+    const newCommentList = commentList.filter(comment => comment.rpid !== rpid)
+    setCommentList(newCommentList)
   }
-
-  const changeActiveType = (type: string) => {
-    setActiveType(type);
-
-    if (type === 'hot') {
-      setCommentList(_.orderBy(commentList, 'like', 'desc'))
-    } else {
-      setCommentList(_.orderBy(commentList, 'ctime', 'desc'))
-    }
-  }
-
-  const makePost = () => {
-    // textareaRef.current?.value
-
-    const newComment = {
-      rpid: uuidv4(),
-      user,
-      content: textareaRef.current!.value,
-      ctime: dayjs(Date.now()).format('MM-DD HH:mm'),
-      like: 0
-    }
-    setCommentList([...commentList, newComment])
-    textareaRef.current!.value = '';
-    textareaRef.current!.focus()
-
-  }
-
-
   return (
     <div className="app">
       {/* Nav Tab */}
@@ -145,28 +77,10 @@ const App = () => {
             {/* Like */}
             <span className="total-reply">{10}</span>
           </li>
-          <li className="nav-sort" >
-            {/* highlight class name： active ****Tab mapped below*/}
-            {
-              tabs.map(tab => {
-                let classnames = '';
-                if (tab.type === activeType) {
-                  classnames = 'nav-item active'
-                } else {
-                  classnames = 'nav-item'
-                }
-
-
-                return (<span key={tab.type}
-                  className={classnames}
-                  onClick={() => changeActiveType(tab.type)}>
-                  {tab.text}
-                </span>);
-              }
-              )
-            }
-
-
+          <li className="nav-sort">
+            {/* highlight class name： active */}
+            <span className='nav-item'>Top</span>
+            <span className='nav-item'>Newest</span>
           </li>
         </ul>
       </div>
@@ -181,14 +95,14 @@ const App = () => {
             </div>
           </div>
           <div className="reply-box-wrap">
-            {/* comment ***********Ref added*/}
-            <textarea ref={textareaRef}
+            {/* comment */}
+            <textarea
               className="reply-box-textarea"
               placeholder="tell something..."
             />
             {/* post button */}
-            <div className="reply-box-send" onClick={makePost}>
-              <div className="send-text" >post</div>
+            <div className="reply-box-send">
+              <div className="send-text">post</div>
             </div>
           </div>
         </div>
