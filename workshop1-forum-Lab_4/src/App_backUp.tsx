@@ -105,36 +105,120 @@ function Reply_Item(props: PropsReplyType) {
   const { commentList, onDeleteComment } = props
   return (
     <div>
-      {commentList.map(item =>
-        <div className="reply-item" key={item.rpid}>
-          <div className="root-reply-avatar">
-            <div className="bili-avatar">
-              <img
-                className="bili-avatar-img"
-                alt=""
-              />
-            </div>
-          </div>
-          <div className="content-wrap">
-            <div className="user-info">
-              <div className="user-name">{item.user.uname}</div>
-            </div>
-            <div className="root-reply">
-              <span className="reply-content">{item.content}</span>
-              <div className="reply-info">
-                <span className="reply-time">{item.ctime}</span>
-                <span className="reply-time">Like:{item.like}</span>
-                {item.user.uid === user.uid && (
-                  <span className="delete-btn" onClick={() => onDeleteComment(item.rpid)}>
-                    Delete
-                  </span>
-                )}
+      <div className="reply-list">
+        {commentList.map(item => (
+          <div className="reply-item" key={item.rpid}>
+            <div className="root-reply-avatar">
+              <div className="bili-avatar">
+                <img
+                  className="bili-avatar-img"
+                  alt=""
+                />
               </div>
             </div>
+            <div className="content-wrap">
+              <div className="user-info">
+                <div className="user-name">{item.user.uname}</div>
+              </div>
+              <div className="root-reply">
+                <span className="reply-content">{item.content}</span>
+                <div className="reply-info">
+                  <span className="reply-time">{item.ctime}</span>
+                  <span className="reply-time">Like:{item.like}</span>
+                  {item.user.uid === user.uid && (
+                    <span className="delete-btn" onClick={() => onDeleteComment(item.rpid)}>
+                      Delete
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>))}
+      </div ></div >)
+}
+interface CommentHeaderPropsType {
+  activeType: string;
+  comments: Comment[];
+  onChangeActiveType: (tabName: string) => void;
+}
+function Reply_navigation(props: CommentHeaderPropsType) {
+  const { activeType, comments, onChangeActiveType } = props
+  return (
+    <div className="reply-navigation">
+      <ul className="nav-bar">
+        <li className="nav-title">
+          <span className="nav-title-text">Comments</span>
+          {/* Like */}
+          <span className="total-reply">{10}</span>
+        </li>
+        <li className="nav-sort" >
+          {/* highlight class name： active ****Tab mapped below*/}
+          {
+            tabs.map(tab => {
+              let classnames = '';
+              if (tab.type === activeType) {
+                classnames = 'nav-item active'
+              } else {
+                classnames = 'nav-item'
+              }
+              return (<span key={tab.type}
+                className={classnames}
+                onClick={() => onChangeActiveType(tab.type)}>
+                {tab.text}
+              </span>);
+            }
+            )
+          }
+        </li>
+      </ul>
+    </div>
+
+  )
+}
+
+interface PropsWrapType {
+  onMakePost: () => void
+}
+function Reply_Wrap(props: PropsWrapType) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const { onMakePost } = props
+  // const newCommnet: Comment = {
+  //   rpid: uuidv4(),
+  //   user,
+  //   content: textareaRef.current!.value,
+  //   ctime: dayjs(Date.now()).format('MM-DD HH:mm'),
+  //   like: 0
+  // }
+  textareaRef.current!.value = '';
+  textareaRef.current!.focus()
+
+
+  return (<div className="reply-wrap">
+
+    <div className="reply-wrap">
+      <div className="box-normal">
+        {/* current logged in user profile */}
+        <div className="reply-box-avatar">
+          <div className="bili-avatar">
+            <img className="bili-avatar-img" src={avatar} alt="Profile" />
           </div>
         </div>
-      )}
-    </div >)
+        <div className="reply-box-wrap">
+          {/* comment ***********Ref added*/}
+          <textarea ref={textareaRef}
+            className="reply-box-textarea"
+            placeholder="tell something..."
+          />
+          {/* post button */}
+          <div className="reply-box-send" onClick={onMakePost}>
+            <div className="send-text" >post</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {/* div end here */}
+  </div>)
+
 }
 
 const App = () => {
@@ -170,71 +254,17 @@ const App = () => {
     textareaRef.current!.value = '';
     textareaRef.current!.focus()
   }
-  return (<div className="app">
-    {/* Nav Tab */}
-    <div className="reply-navigation">
-      <ul className="nav-bar">
-        <li className="nav-title">
-          <span className="nav-title-text">Comments</span>
-          {/* Like */}
-          <span className="total-reply">{10}</span>
-        </li>
-        <li className="nav-sort" >
-          {/* highlight class name： active ****Tab mapped below*/}
-          {
-            tabs.map(tab => {
-              let classnames = '';
-              if (tab.type === activeType) {
-                classnames = 'nav-item active'
-              } else {
-                classnames = 'nav-item'
-              }
-              return (<span key={tab.type}
-                className={classnames}
-                onClick={() => changeActiveType(tab.type)}>
-                {tab.text}
-              </span>);
-            }
-            )
-          }
-        </li>
-      </ul>
-    </div>
+  return (
+    <div className="app">
+      <Reply_navigation activeType={activeType} comments={commentList} onChangeActiveType={(tabName) => setActiveType(tabName)} />
 
-    <div className="reply-wrap">
-      {/* comments */}
-      <div className="box-normal">
-        {/* current logged in user profile */}
-        <div className="reply-box-avatar">
-          <div className="bili-avatar">
-            <img className="bili-avatar-img" src={avatar} alt="Profile" />
-          </div>
-        </div>
-        <div className="reply-box-wrap">
-          {/* comment ***********Ref added*/}
-          <textarea ref={textareaRef}
-            className="reply-box-textarea"
-            placeholder="tell something..."
-          />
-          {/* post button */}
-          <div className="reply-box-send" onClick={makePost}>
-            <div className="send-text" >post</div>
-          </div>
-        </div>
-      </div>
-      {/* comment list */}
-      <div className="reply-list">
-        {/* comment item */}
-        {commentList.map(item =>
+      <div className="reply-wrap">
+        <Reply_Wrap onMakePost={makePost} />
 
-          <div className="reply-item" key={item.rpid}>
-            <Reply_Item commentList={commentList} onDeleteComment={deleteComment} />
-          </div>
-          // {/* profile */}
-        )}
+        {/* parent to child------new component added here */}
+        <Reply_Item commentList={commentList} onDeleteComment={deleteComment} />
       </div>
     </div>
-  </div>)
-
+  )
 }
 export default App
