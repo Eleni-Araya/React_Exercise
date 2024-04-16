@@ -1,14 +1,28 @@
+import { useEffect, useState } from 'react';
+import PubSub from 'pubsub-js';
 import SearchReponse from '../../types/search-response';
 
 import './index.css'
 
-// type Props = {
-//     searchResponse: SearchReponse
-// }
+export default function List() {
+    const [searchResponse, setSearchResponse] = useState<SearchReponse>({
+        isFirst: true,
+        isLoading: false,
+        isError: false,
+        users: []
+    });
+    const { isFirst, isLoading, isError, users } = searchResponse;
 
-export default function List(props: SearchReponse) {
-    // const { searchResponse: {isFirst, isLoading, isError, users} } = props;
-    const { isFirst, isLoading, isError, users } = props;
+    useEffect(() => {
+        const token = PubSub.subscribe('sd545', (msg, data) => {
+            setSearchResponse(data)
+        });
+
+        return () => {
+            PubSub.unsubscribe(token)
+        }
+
+    }, [])
 
     return (
         <div>
@@ -25,9 +39,7 @@ export default function List(props: SearchReponse) {
                                         <p className="card-text">{user.login}</p>
                                     </div>
                                 ))}
-
-                            </div>
-            }
+                            </div>}
         </div>
     )
 }

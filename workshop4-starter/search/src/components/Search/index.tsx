@@ -1,31 +1,24 @@
+import { ChangeEvent, useRef, useState } from "react"
 import axios from "axios";
-import { ChangeEvent, useState } from "react"
-import User from "../../types/user";
-import SearchReponse from "../../types/search-response";
+import PubSub from "pubsub-js";
 
-type Props = {
-    onSetSearchResponse: (value: SearchReponse) => void;
-}
+export default function Search() {
 
-export default function Search(props: Props) {
-    const { onSetSearchResponse } = props;
-
-    const [keyword, setKeyword] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null)
 
     const search = async () => {
-        onSetSearchResponse({ isFirst: false, isLoading: true, isError: false, users: [] });
+        PubSub.publish('sd545', { isFirst: false, isLoading: true, isError: false, users: [] });
         try {
-            const response = await axios.get(`https://api.github.com/search/users?q=${keyword}`);
+            const response = await axios.get(`https://api.github.com/search/users?q=${inputRef.current!.value}`);
             if (response.status === 200) {
-                onSetSearchResponse({ isFirst: false, isLoading: false, isError: false, users: response.data.items });
-                setKeyword('')
+                PubSub.publish('sd545', { isFirst: false, isLoading: false, isError: false, users: response.data.items });
+                // setKeyword('')
             } else {
-                onSetSearchResponse({ isFirst: false, isLoading: true, isError: true, users: [] });
+                PubSub.publish('sd545', { isFirst: false, isLoading: true, isError: true, users: [] });
             }
         } catch (e) {
-            onSetSearchResponse({ isFirst: false, isLoading: true, isError: true, users: [] });
+            PubSub.publish('sd545', { isFirst: false, isLoading: true, isError: true, users: [] });
         }
-
     }
 
     return (
@@ -35,8 +28,9 @@ export default function Search(props: Props) {
                 <input
                     type="text"
                     placeholder="enter the name you search"
-                    value={keyword}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)}
+                    ref={inputRef}
+                // value={keyword}
+                // onChange={(e: ChangeEvent<HTMLInputElement>) => setKeyword(e.target.value)}
                 />&nbsp;
                 <button onClick={search}>Search</button>
             </div>
