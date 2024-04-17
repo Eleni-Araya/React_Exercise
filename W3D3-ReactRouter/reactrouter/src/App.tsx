@@ -1,18 +1,14 @@
-import { NavLink, Routes, Route, Navigate } from "react-router-dom";
-import classNames from 'classnames';
+import { NavLink, Routes, Route, Navigate, useRoutes } from "react-router-dom";
 
-
-import Home from "./pages/Home";
-import About from "./pages/about";
-import PageNotFound from "./pages/pageNotFound";
-
-import './App.css';
+import routes from "./routes";
 
 function App() {
     // const changeNavLinkHighlight = (obj: any) => {
     //     const { isActive } = obj
     //     return isActive ? 'nav-link highlighted' : 'nav-link'
     // }
+
+    const element = useRoutes(routes)
     return (
         <div className="container">
             <header className="d-flex flex-wrap justify-content-center py-3 mb-3 border-bottom">
@@ -26,12 +22,12 @@ function App() {
                     <div className="d-flex flex-column flex-shrink-0 p-3 border">
                         <ul className="nav nav-pills flex-column mb-auto">
                             <li className="nav-item">
-                                <NavLink to='/Home' className={({ isActive }) => isActive ? 'nav-link highlighted' : 'nav-link'}>
+                                <NavLink to='/Home' className='nav-link'>
                                     Home
                                 </NavLink>
                             </li>
                             <li>
-                                <NavLink to='/about' className={({ isActive }) => isActive ? 'nav-link highlighted' : 'nav-link'}>
+                                <NavLink to='/about' className='nav-link'>
                                     About
                                 </NavLink>
                             </li>
@@ -39,12 +35,8 @@ function App() {
                     </div>
                 </div>
                 <div className="col-9">
-                    <Routes>
-                        <Route path="/Home" element={<Home />} ></Route>
-                        <Route path="/about" element={<About />} ></Route>
-                        <Route path="/" element={<Navigate to="/Home" />}></Route>
-                        <Route path="*" element={<PageNotFound />}></Route>
-                    </Routes>
+                    {element}
+
                 </div>
             </div>
         </div>
