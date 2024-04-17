@@ -22,7 +22,7 @@ function App() {
                     <div className="d-flex flex-column flex-shrink-0 p-3 border">
                         <ul className="nav nav-pills flex-column mb-auto">
                             <li className="nav-item">
-                                <NavLink to='/Home' className='nav-link'>
+                                <NavLink to='/Home' className='nav-link' /*end*/>
                                     Home
                                 </NavLink>
                             </li>
