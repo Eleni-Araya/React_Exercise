@@ -1,0 +1,27 @@
+GET http://localhost:8000/products
+
+###
+POST http://localhost:8000/products
+Content-Type: application/json
+
+{
+    "title": "Angular.js",
+    "price": 299,
+    "description": "Client Side"
+}
+
+###
+GET http://localhost:8000/products/113553
+
+###
+DELETE http://localhost:8000/products/3
+
+###
+PUT http://localhost:8000/products/3
+Content-Type: application/json
+
+{
+    "title": "Angular.js 3",
+    "price": 399,
+    "description": "Client Side 3"
+}
