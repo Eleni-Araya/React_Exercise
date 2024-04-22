@@ -54,12 +54,10 @@ export default function MusicCom() {
     if (response.status === 200) {
       setPlayList(response.data)
     }
-
   }
   useEffect(() => {
     const playList = async () => {
       try {
-
         const response = await userService.getPlaylist()
         setPlayList(response.data)
       } catch (error) {
@@ -79,6 +77,7 @@ export default function MusicCom() {
       throw new Error('Error removing song from playlist')
     }
   }
+
 
   const logOut = () => {
     sessionStorage.removeItem('token')
